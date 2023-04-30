@@ -1,0 +1,25 @@
+.app {
+  width: 960px;
+  min-height: 400px;
+  margin: auto;
+  padding: 20px;
+  background-color: floralwhite;
+
+}
+
+.post-item {
+  margin: 10px;
+  padding: 20px 12px;
+  border: 1px solid darkgrey;
+  border-radius: 4px;
+
+  &__content {
+
+  }
+
+  &__title,
+  &__description {
+    margin: 0 0 10px;
+    padding: 0;
+  }
+}
