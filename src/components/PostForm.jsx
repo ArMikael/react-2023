@@ -2,19 +2,16 @@ import RcInput from "./ui/rc-input/RcInput";
 import RcButton from "./ui/rc-button/RcButton";
 import React, {useState} from "react";
 
-const PostForm = () => {
+const PostForm = ({ create }) => {
     const [post, setPost] = useState({ title: '', description: '' });
-    const [posts, setPosts] = useState([{ title: '', description: ''}]);
 
     const addPost = (event) => {
         event.preventDefault();
         const newPost = {
-            id: Date.now(),
-            title: post.title,
-            description: post.description
+            ...post, id: Date.now()
         };
 
-        setPosts([...posts, newPost]);
+        create(newPost);
         setPost({ title: '', description: '' });
     }
 

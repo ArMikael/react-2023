@@ -1,6 +1,7 @@
 import React from 'react';
+import RcButton from "./ui/rc-button/RcButton";
 
-const PostItem = ({ post }) => {
+const PostItem = ({ post, remove }) => {
     return (
         <div className='post-item'>
             <div className='post-item__content'>
@@ -12,7 +13,7 @@ const PostItem = ({ post }) => {
                 </p>
             </div>
             <div className="post-item__buttons-container">
-                <button className="post-item__button">Remove</button>
+                <RcButton onClick={() => remove(post)} className="post-item__button">Remove</RcButton>
             </div>
         </div>
     );
