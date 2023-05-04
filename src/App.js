@@ -1,9 +1,10 @@
 import Counter from "./components/Counter";
 import '../src/styles/App.scss';
-import React, { useState } from "react";
+import React, {useMemo, useState} from "react";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import RcSelect from "./components/ui/rc-select/RcSelect";
+import RcInput from "./components/ui/rc-input/RcInput";
 
 function App() {
     const [ posts, setPosts ] = useState([
@@ -13,6 +14,19 @@ function App() {
     ]);
 
     const [selectedSort, setSelectedSort] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const sortedPosts = useMemo(() => {
+        if (selectedSort) {
+            return [...posts].sort((a, b) => a[selectedSort]?.localeCompare(b[selectedSort]));
+        } else {
+            return posts;
+        }
+    }, [selectedSort, posts]);
+
+    const sortedAndFilteredPosts = useMemo(() => {
+        return sortedPosts.filter(post => post.title.toLowerCase().includes(searchQuery));
+    }, [searchQuery, sortedPosts]);
 
     const sortListOptions = [
         {
@@ -35,7 +49,6 @@ function App() {
 
     const sortPosts = (sort) => {
         setSelectedSort(sort);
-        setPosts([...posts].sort((a, b) => a[sort]?.localeCompare(b[sort])));
     }
 
   return (
@@ -44,14 +57,20 @@ function App() {
 
         <PostForm create={createPost} posts={posts}></PostForm>
 
+        <RcInput type="text"
+                 value={searchQuery}
+                 onChange={event => setSearchQuery(event.target.value)}
+                 placeholder="Search...">
+        </RcInput>
+
         <RcSelect options={sortListOptions}
                   defaultValue='Title'
                   value={selectedSort}
                   onChange={sortPosts}>
         </RcSelect>
 
-        {posts.length !== 0
-                ? <PostList remove={removePost} posts={posts}></PostList>
+        {sortedAndFilteredPosts.length !== 0
+                ? <PostList remove={removePost} posts={sortedAndFilteredPosts}></PostList>
                 : <h2 className='empty-state'>Posts not found</h2>
         }
 
