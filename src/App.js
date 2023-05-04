@@ -3,8 +3,7 @@ import '../src/styles/App.scss';
 import React, {useMemo, useState} from "react";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
-import RcSelect from "./components/ui/rc-select/RcSelect";
-import RcInput from "./components/ui/rc-input/RcInput";
+import PostFilter from "./components/PostFilter";
 
 function App() {
     const [ posts, setPosts ] = useState([
@@ -13,31 +12,22 @@ function App() {
         { id: 103, title: 'ReactJs', body: 'Open-source front-end JavaScript library' },
     ]);
 
-    const [selectedSort, setSelectedSort] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [filter, setFilter] = useState({
+        sort: '',
+        searchQuery: ''
+    })
 
     const sortedPosts = useMemo(() => {
-        if (selectedSort) {
-            return [...posts].sort((a, b) => a[selectedSort]?.localeCompare(b[selectedSort]));
+        if (filter.sort) {
+            return [...posts].sort((a, b) => a[filter.sort]?.localeCompare(b[filter.sort]));
         } else {
             return posts;
         }
-    }, [selectedSort, posts]);
+    }, [filter.sort, posts]);
 
     const sortedAndFilteredPosts = useMemo(() => {
-        return sortedPosts.filter(post => post.title.toLowerCase().includes(searchQuery));
-    }, [searchQuery, sortedPosts]);
-
-    const sortListOptions = [
-        {
-            name: 'Title',
-            value: 'title'
-        },
-        {
-            name: 'Description',
-            value: 'body'
-        }
-    ]
+        return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.searchQuery));
+    }, [filter.searchQuery, sortedPosts]);
 
     const createPost = (newPost) => {
         setPosts([...posts, newPost]);
@@ -47,27 +37,13 @@ function App() {
         setPosts(posts.filter(post => post.id !== removedPost.id));
     }
 
-    const sortPosts = (sort) => {
-        setSelectedSort(sort);
-    }
-
   return (
     <div className="app">
         <Counter></Counter>
 
         <PostForm create={createPost} posts={posts}></PostForm>
 
-        <RcInput type="text"
-                 value={searchQuery}
-                 onChange={event => setSearchQuery(event.target.value)}
-                 placeholder="Search...">
-        </RcInput>
-
-        <RcSelect options={sortListOptions}
-                  defaultValue='Title'
-                  value={selectedSort}
-                  onChange={sortPosts}>
-        </RcSelect>
+        <PostFilter filter={filter} setFilter={setFilter}></PostFilter>
 
         {sortedAndFilteredPosts.length !== 0
                 ? <PostList remove={removePost} posts={sortedAndFilteredPosts}></PostList>
