@@ -4,6 +4,8 @@ import React, {useMemo, useState} from "react";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import PostFilter from "./components/PostFilter";
+import RcModal from "./components/ui/rc-modal/RcModal";
+import RcButton from "./components/ui/rc-button/RcButton";
 
 function App() {
     const [ posts, setPosts ] = useState([
@@ -12,10 +14,8 @@ function App() {
         { id: 103, title: 'ReactJs', body: 'Open-source front-end JavaScript library' },
     ]);
 
-    const [filter, setFilter] = useState({
-        sort: '',
-        searchQuery: ''
-    })
+    const [filter, setFilter] = useState({ sort: '', searchQuery: '' });
+    const [modal, setModal] = useState(false);
 
     const sortedPosts = useMemo(() => {
         if (filter.sort) {
@@ -31,6 +31,7 @@ function App() {
 
     const createPost = (newPost) => {
         setPosts([...posts, newPost]);
+        setModal(false);
     };
 
     const removePost = (removedPost) => {
@@ -41,15 +42,12 @@ function App() {
     <div className="app">
         <Counter></Counter>
 
-        <PostForm create={createPost} posts={posts}></PostForm>
-
+        <RcButton onClick={() => setModal(true)}>Create Post</RcButton>
+        <RcModal visible={modal} setVisible={setModal}>
+            <PostForm create={createPost} posts={posts}></PostForm>
+        </RcModal>
         <PostFilter filter={filter} setFilter={setFilter}></PostFilter>
-
-        {sortedAndFilteredPosts.length !== 0
-                ? <PostList remove={removePost} posts={sortedAndFilteredPosts}></PostList>
-                : <h2 className='empty-state'>Posts not found</h2>
-        }
-
+        <PostList remove={removePost} posts={sortedAndFilteredPosts}></PostList>
     </div>
   );
 }

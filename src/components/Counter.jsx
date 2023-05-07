@@ -14,7 +14,7 @@ const Counter = () => {
     return (
         <div className='counter-component'>
             <h2>{count}</h2>
-            <button onClick={increment}>Increment</button>
+            <button onClick={increment} style={{ marginBottom: 10, marginRight: 10 }}>Increment</button>
             <button onClick={decrement}>Decrement</button>
         </div>
     )

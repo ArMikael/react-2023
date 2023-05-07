@@ -1,6 +1,8 @@
+import classes from './RcInput.module.scss'
+
 const RcInput = (props) => {
     return (
-        <input {...props}/>
+        <input className={classes.rcInput} {...props}/>
     )
 };
 
