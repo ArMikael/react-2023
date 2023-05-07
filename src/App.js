@@ -9,30 +9,25 @@ import RcButton from "./components/ui/rc-button/RcButton";
 import {usePosts} from "./hooks/usePosts";
 import PostService from "./api/PostService";
 import RcLoader from "./components/ui/rc-loader/RcLoader";
+import useFetching from "./hooks/useFetching";
 
 function App() {
     const [ posts, setPosts ] = useState([]);
-    const [isPostLoading, setIsPostLoading] = useState(false);
     const [filter, setFilter] = useState({ sort: '', searchQuery: '' });
     const [modal, setModal] = useState(false);
     const sortedAndFilteredPosts = usePosts(posts, filter.sort, filter.searchQuery);
+    const [fetchPosts, isPostsLoading, postLoadingError ] = useFetching(async () => {
+        const posts = await PostService.getAll();
+        setPosts(posts);
+
+    })
 
     const createPost = (newPost) => {
         setPosts([...posts, newPost]);
         setModal(false);
     };
 
-    useEffect(() => getPosts, []);
-
-    async function getPosts() {
-        setIsPostLoading(true);
-        const posts = await PostService.getAll();
-
-        setTimeout(() => {
-            setPosts(posts);
-            setIsPostLoading(false);
-        }, 1500);
-    }
+    useEffect(() => fetchPosts, []);
 
     const removePost = (removedPost) => {
         setPosts(posts.filter(post => post.id !== removedPost.id));
@@ -48,7 +43,11 @@ function App() {
         </RcModal>
         <PostFilter filter={filter} setFilter={setFilter}></PostFilter>
 
-        {!isPostLoading
+        {postLoadingError &&
+            <h2>{postLoadingError}</h2>
+        }
+
+        {!isPostsLoading
             ? <PostList remove={removePost} posts={sortedAndFilteredPosts}></PostList>
             : <div className="loader-container"
                    style={{ display: 'flex', justifyContent: 'center', margin: '20px auto' }}>
