@@ -8,6 +8,7 @@ import RcModal from "./components/ui/rc-modal/RcModal";
 import RcButton from "./components/ui/rc-button/RcButton";
 import {usePosts} from "./hooks/usePosts";
 import PostService from "./api/PostService";
+import RcLoader from "./components/ui/rc-loader/RcLoader";
 
 function App() {
     const [ posts, setPosts ] = useState([]);
@@ -26,8 +27,11 @@ function App() {
     async function getPosts() {
         setIsPostLoading(true);
         const posts = await PostService.getAll();
-        setPosts(posts);
-        setIsPostLoading(false);
+
+        setTimeout(() => {
+            setPosts(posts);
+            setIsPostLoading(false);
+        }, 1500);
     }
 
     const removePost = (removedPost) => {
@@ -46,7 +50,10 @@ function App() {
 
         {!isPostLoading
             ? <PostList remove={removePost} posts={sortedAndFilteredPosts}></PostList>
-            : <h2>Loading...</h2>
+            : <div className="loader-container"
+                   style={{ display: 'flex', justifyContent: 'center', margin: '20px auto' }}>
+                <RcLoader/>
+              </div>
         }
 
     </div>
