@@ -23,3 +23,23 @@
     padding: 0;
   }
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+
+  .page-button {
+    margin-right: 6px;
+    padding: 6px 10px;
+    color: darkgray;
+    border: 1px solid darkgray;
+    cursor: pointer;
+
+    &--active {
+      background-color: deepskyblue;
+      color: black;
+      border: 1px solid black;
+    }
+  }
+}
